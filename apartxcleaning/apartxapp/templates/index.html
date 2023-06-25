@@ -1,0 +1,99 @@
+<h1>Orders</h1>
+{% if orders %}
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Cost</th>
+        <th>Phone Number</th>
+        <th>Checklist</th>
+        {% if request.user.userprofile.is_worker %}
+          <th>Request</th>
+        {% endif %}
+        {% if request.user.userprofile.is_customer %}
+          <th>Accepted</th>
+          <th>Worker</th>
+          <th>Actions</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.time }}</td>
+          <td>{{ order.location }}</td>
+          <td>{{ order.cost }}</td>
+          <td>{{ order.phone_number }}</td>
+          <td>{{ order.checklist }}</td>
+          {% if request.user.userprofile.is_worker %}
+            <td>
+              {% if not order.accepted and not request.user.worker in order.requested_by.all %}
+                <a href="{% url 'send_request' order.id %}">Send Request</a>
+              {% endif %}
+            </td>
+          {% endif %}
+          {% if request.user.userprofile.is_customer %}
+            <td>{% if order.accepted %}Yes{% else %}No{% endif %}</td>
+            <td>{{ order.worker }}</td>
+            <td>
+                {% if order.requested_by.exists %}
+                  <ul>
+                    {% for worker in order.requested_by.all %}
+                      {% if not order.accepted %}
+                        <li>{{ worker.user.username }}
+                          <a href="{% url 'worker_profile' worker.id %}">View Profile</a>
+                        </li>
+                        <form method="POST" action="{% url 'accept_request' order.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="worker_id" value="{{ worker.id }}">
+                          <button type="submit">Accept Request</button>
+                        </form>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No orders available.</p>
+{% endif %}
+{% if request.user.userprofile.is_worker %}
+  <h2>My Orders</h2>
+  {% for order in myorders %}
+      <p>Order ID: {{ order.id }}</p>
+      <p>Time: {{ order.time }}</p>
+      <p>Location: {{ order.location }}</p>
+      <p>Cost: {{ order.cost }}</p>
+      <p>Phone Number: {{ order.phone_number }}</p>
+      <p>Checklist: {{ order.checklist }}</p>
+      <a href="{% url 'view_order' order.id %}">Перейти</a>
+  {% endfor %}
+  <br><br><br>
+<form action="{% url 'add_free_time' %}" method="post">
+  {% csrf_token %}
+  <label for="start_time">Start Time:</label>
+  <input type="datetime-local" id="start_time" name="start_time">
+  <label for="end_time">End Time:</label>
+  <input type="datetime-local" id="end_time" name="end_time">
+  <input type="submit" value="Add Free Time">
+</form>
+
+<!-- View Free Time Ranges -->
+<h2>Free Time Ranges</h2>
+{% if free_times %}
+  <ul>
+    {% for free_time in free_times %}
+      <li>{{ free_time.start_time }} to {{ free_time.end_time }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No free time ranges available.</p>
+{% endif %}
+{% endif %}

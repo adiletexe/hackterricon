@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ApartX Cleaning</title>
+    <link rel="stylesheet" href="">
+    <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@600&family=Montserrat&family=Oxygen&family=Roboto+Condensed&display=swap" rel="stylesheet">
+    <link rel="icon" href="">
+<body>
+  <div class="login-box">
+      {% csrf_token %}
+      <h2>SignUp</h2>
+      <form method="POST" action="{% url 'signupsystem' %}">
+          {% csrf_token %}
+        <div class="user-box">
+          <input type="text" name="username" required="">
+          <label>Username</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password1" required="">
+          <label>Password</label>
+        </div>
+          <div class="user-box">
+          <input type="password" name="password2" required="">
+          <label>Password Again</label>
+        </div>
+          <div class="user-box">
+            <select name="iswho" required>
+                <option value="worker">Исполнитель</option>
+                <option value="customer">Заказчик</option>
+            </select>
+              <label>Your Role:</label>
+        </div>
+          <div class="incorrect-password">
+            <p>{{ error }}</p>
+          </div>
+        <button type="submit">SignUp
+        </button>
+        <div class="signup-link">Already have an account? <a href="{% url 'loginsystem' %}">Login</a></div>
+      </form>
+  </div>
+</body>
+</html>
+

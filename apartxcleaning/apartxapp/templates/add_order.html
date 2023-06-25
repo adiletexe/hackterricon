@@ -1,0 +1,25 @@
+<h1>Add Order</h1>
+<form method="POST" action="{% url 'add_order' %}">
+{% csrf_token %}
+<div>
+  <label for="time">Time:</label>
+  <input type="datetime-local" id="time" name="time" required>
+</div>
+<div>
+  <label for="location">Location:</label>
+  <input type="text" id="location" name="location" maxlength="255" required>
+</div>
+<div>
+  <label for="cost">Cost:</label>
+  <input type="number" id="cost" name="cost" step="0.01" min="0" required>
+</div>
+<div>
+  <label for="phone_number">Phone Number:</label>
+  <input type="text" id="phone_number" name="phone_number" maxlength="20" required>
+</div>
+<div>
+  <label for="checklist">Checklist:</label>
+  <textarea id="checklist" name="checklist" rows="5" required></textarea>
+</div>
+<button type="submit">Add Order</button>
+</form>

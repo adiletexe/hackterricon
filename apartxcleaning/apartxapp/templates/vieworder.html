@@ -1,0 +1,37 @@
+
+{% if request.user.userprofile.is_worker %}
+<form method="POST" action="{% url 'view_order' order.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="photoreport" multiple>
+    <button type="submit">Submit</button>
+</form>
+<form method="POST" action="{% url 'map' %}">
+    {% csrf_token %}
+    <input type="text" name="address1">
+    <input type="text" name="address2">
+    <button type="submit">Построить маршрут</button>
+</form>
+{% endif %}
+
+{% if request.user.userprofile.is_customer %}
+    <form method="POST" action="{% url 'completed' order.id %}">
+        {% csrf_token %}
+        Select Rating
+        <select name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        <button type="submit">Завершить заказ</button>
+    </form>
+    {% for photo in order.photoreport.all %}
+        <img src="{{ photo.image.url }}" alt="Photo">
+    {% endfor %}
+{%endif%}
